@@ -1,27 +1,29 @@
-import configparser
+"""
+Simple echo-bot
+"""
 import argparse
+import configparser
+
 import telebot
 
 
-class Options:
-    def __init__(self, config_path):
-        config = configparser.ConfigParser()
-        config.read(config_path)
-        self.token = config['bot']['token']
-
-    token = None
+def parse_options(config_path):
+    """Extract necessary options from the config file"""
+    config = configparser.ConfigParser()
+    config.read(config_path)
+    return {"token": config["bot"]["token"]}
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_path', help='path to the configuration file')
+    parser.add_argument("config_path", help="path to the configuration file")
     args = parser.parse_args()
     return args
 
 
 launch_args = parse_args()
-options = Options(launch_args.config_path)
-bot = telebot.TeleBot(options.token)
+options = parse_options(launch_args.config_path)
+bot = telebot.TeleBot(options["token"])
 
 
 @bot.message_handler(func=lambda message: True)
