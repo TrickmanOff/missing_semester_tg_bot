@@ -7,5 +7,5 @@ COPY /Docker/pip_packages.txt main.py config.ini ./
 
 RUN pip3 install --no-cache-dir -r pip_packages.txt
 
-CMD ["python3", "main.py", "config.ini"]
+ENTRYPOINT ["python3", "main.py", "config.ini"]
 
