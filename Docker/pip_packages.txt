@@ -1,2 +1,8 @@
 configparser==5.0.2
 pyTelegramBotAPI==4.2.2
+tabulate==0.8.9
+peewee==3.14.8
+schedule==1.1.0
+google-api-python-client==2.33.0
+google-auth-httplib2==0.1.0
+httplib2==0.20.2
