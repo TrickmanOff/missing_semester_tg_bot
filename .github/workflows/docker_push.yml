@@ -2,7 +2,7 @@ on:
   release:
     types: [published]
   push:
-    branches: [main]
+    branches-ignore: ['*', '!main']
     tags: [v*]
 
 jobs:
