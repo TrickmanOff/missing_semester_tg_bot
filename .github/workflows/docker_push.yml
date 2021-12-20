@@ -1,13 +1,11 @@
 on:
   release:
     types: [published]
-  push:
-    tags: [v*]
+    branches: [main]
 
 jobs:
   push-to-dockerhub:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
 #
