@@ -10,7 +10,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
-
+#
 # no need to run tests as during a pull request they have been already ran
 #
 #      - name: 'Waiting for tests to pass'
