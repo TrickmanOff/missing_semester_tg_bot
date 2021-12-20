@@ -3,6 +3,9 @@ on:
     branches-ignore: [main]
   pull_request:
     branches: [main]
+  # before pushing the image
+  # release:
+  #   types: [published]
 
 jobs:
   checks:
