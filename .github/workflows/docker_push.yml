@@ -5,6 +5,7 @@ on:
   push:
     tags:
       - '*'
+    ignore_branches: ['*', '!main']
 
 jobs:
   push-to-dockerhub:
