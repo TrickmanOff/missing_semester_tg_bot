@@ -7,9 +7,9 @@ on:
       - 'v*'
 
 jobs:
-  if: ${{ github.ref  }} == 'main' # to trigger on tags only from 'main'
   push-to-dockerhub:
     runs-on: ubuntu-latest
+    if: ${{ github.ref  }} == 'main' # to trigger on tags only from 'main'
     steps:
       - uses: actions/checkout@v2
 #
