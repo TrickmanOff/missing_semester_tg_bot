@@ -4,10 +4,10 @@ on:
     branches: [main]
   push:
     tags:
-      - '*'
-    ignore_branches: ['*', '!main']
+      - 'v*'
 
 jobs:
+  if: ${{ github.ref  }} == 'main' # to trigger on tags only from 'main'
   push-to-dockerhub:
     runs-on: ubuntu-latest
     steps:
