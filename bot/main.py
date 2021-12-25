@@ -127,10 +127,10 @@ if __name__ == "__main__":
 
         name = message.text.split(" ")[1]
         if db_storage.delete_with_name(message.chat.id, name):
-            message_text = f"The notifier '{name}' has been deleted"
+            message_text = f"The notifier <b>{name}</b> has been deleted"
         else:
-            message_text = f"The notifier '{name}' not found"
-        bot.reply_to(message, text=message_text)
+            message_text = f"The notifier <b>{name}</b> not found"
+        bot.reply_to(message, text=message_text, parse_mode="HTML")
         db_lock.release()
 
     @bot.message_handler(commands=["help"])
