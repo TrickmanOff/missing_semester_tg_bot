@@ -22,13 +22,17 @@ class SheetsApi:
         :return: None if an error occurred
         """
         try:
-            return (
+            res = (
                 self.sheets_service.spreadsheets()
                 .values()
                 .get(spreadsheetId=sheet_id, range=cell_range)
-                .execute()["values"]
+                .execute()
             )
-        except errors.HttpError:
+            if "values" in res:
+                return res["values"]
+            else:
+                return ""
+        except (errors.HttpError, KeyError):
             return None
 
     def get_range_hash(self, sheet_id, cell_range):

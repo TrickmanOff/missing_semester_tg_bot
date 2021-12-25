@@ -38,6 +38,7 @@ def notify(bot, db_storage, db_lock, sheets_service):
                 chat_id=record["chat_id"],
                 text=message_text,
                 parse_mode="HTML",
+                disable_web_page_preview=True,
             )
             removed.append((record["chat_id"], record["name"]))
             continue
