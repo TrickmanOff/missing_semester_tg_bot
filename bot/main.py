@@ -1,6 +1,3 @@
-"""
-Simple echo-bot
-"""
 import argparse
 from multiprocessing import Lock, Process
 
@@ -9,7 +6,7 @@ from data_storage import DataStorage
 from notifier import CHECK_FREQUENCY, start_notifier
 from sheets_api import SheetsApi
 from tabulate import tabulate
-from utils import formatted_link_from_id
+from utils import formatted_link, formatted_link_from_id, id_from_link
 
 
 def parse_args():
@@ -41,6 +38,12 @@ if __name__ == "__main__":
             bot.send_message(chat_id=message.chat.id, text="Wrong format")
         else:
             _, name, sheet_id, cell_range = message.text.split(" ")
+            if len(sheet_id) > 44:  # interpret as an url
+                sheet_id = id_from_link(sheet_id)
+                if sheet_id is None:
+                    bot.reply_to(message, "Invalid URL")
+                    return
+
             chat_id = message.chat.id
 
             db_lock.acquire()
@@ -59,13 +62,28 @@ if __name__ == "__main__":
                 bot.reply_to(message, "A notifier with this name is already set")
                 return
 
+            cur_value_hash = sheets_service.get_range_hash(sheet_id, cell_range)
+            if cur_value_hash is None:
+                message_text = (
+                    f"An error occurred trying to set the <b>{name}</b> "
+                    f"notifier. \n"
+                    f"Check the Sheet ID and range format. "
+                    f"Probably the {formatted_link_from_id(sheet_id, 'table')} is "
+                    f"private or doesn't exist. "
+                )
+                bot.send_message(
+                    chat_id=chat_id,
+                    text=message_text,
+                    parse_mode="HTML",
+                )
+                return
             # add new notifier
             db_storage.add_record(
                 chat_id,
                 name,
                 sheet_id,
                 cell_range,
-                sheets_service.get_range_hash(sheet_id, cell_range),
+                cur_value_hash,
             )
             bot.reply_to(message, text="Successfully set")
             db_lock.release()
@@ -117,16 +135,37 @@ if __name__ == "__main__":
 
     @bot.message_handler(commands=["help"])
     def help_command(message):
-        message_text = (
-            "For setting a notification enter a message in the following format\n"
-            "'/set <name> <google_sheet_id> <cell range>' "
-            "(each value must not contain spaces)\n"
-            "cell range format - A1 or R1C1 notation\n"
-            "for example:\n"
-            "'/set test_results 17h7GKuJ1gS7faOiyM7dBaM1XPUHPXPgIb7zCFfFGUOE "
-            "Sheet1!A1:A2'"
+        a1_examples_link = (
+            "https://developers.google.com/sheets/api/guides/concepts#expandable-1"
         )
-        bot.send_message(chat_id=message.chat.id, text=message_text)
+        r1c1_examples_link = (
+            "https://developers.google.com/sheets/api/guides/concepts#expandable-2"
+        )
+
+        message_text = (
+            "To <b>set</b> a notifier enter a message in the following format:\n"
+            "<pre> /set {name} {google_sheet_id | table_url} {cell range} </pre>\n"
+            "(each value must not contain spaces)\n"
+            f"cell range format - {formatted_link(a1_examples_link, 'A1')} "
+            f"or {formatted_link(r1c1_examples_link, 'R1C1')} notation\n"
+            "for example:\n"
+            "<pre> /set test_results 17h7GKuJ1gS7faOiyM7dBaM1XPUHPXPgIb7zCFfFGUOE "
+            "Sheet1!A1:A2 </pre>\n"
+            "<pre> /set test_results "
+            "https://docs.google.com/spreadsheets/d/17h7GKuJ1gS7faOiyM7dBaM1XPUHPXPgIb7zCFfFGUOE "
+            "Sheet1!A1:A2 </pre>\n\n"
+            ""
+            "To <b>delete</b> a notifier use\n"
+            "<pre> /del {name} </pre>\n"
+            "for example:\n"
+            "<pre> /del test_results </pre>"
+        )
+        bot.send_message(
+            chat_id=message.chat.id,
+            text=message_text,
+            parse_mode="HTML",
+            disable_web_page_preview=True,
+        )
 
     @bot.message_handler(commands=["check_frequency"])
     def check_freq_command(message):
