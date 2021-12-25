@@ -1,0 +1,18 @@
+services:
+  bot:
+    image: docker.io/trickman/googlesheet-monitoring-tg-bot:latest
+    environment:
+      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
+      SHEETS_API_KEY: ${SHEETS_API_KEY}
+    volumes:
+      - /home/tg-bot/database:/database
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/tg-bot/.docker/config.json:/config.json
+
+    environment:
+      WATCHTOWER_POLL_INTERVAL: 10
+
