@@ -14,7 +14,7 @@ def formatted_link_from_id(sheet_id, text="click"):
 
 
 def id_from_link(link):
-    pattern = r"docs\.google\.com/spreadsheets/d/[a-zA-Z0-9-]{44}"
+    pattern = r"docs\.google\.com/spreadsheets/.*/[a-zA-Z0-9-_]{44}"
     match = re.search(pattern, link)
     if match is None:
         return None
