@@ -42,6 +42,6 @@ class SheetsApi:
         values = self.get_range_value(sheet_id, cell_range)
         if values is None:
             return None
-        print(values)
+        # print(values)
         string = json.dumps(values).encode()
         return hashlib.md5(string).hexdigest()

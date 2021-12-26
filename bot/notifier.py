@@ -6,7 +6,7 @@ from sheets_api import SheetsApi
 from utils import formatted_link_from_id
 
 DISCOVERY_URL = "https://sheets.googleapis.com/$discovery/rest?version=v4"
-CHECK_FREQUENCY = 10
+CHECK_FREQUENCY = 20
 
 """
 data format:
