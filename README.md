@@ -14,7 +14,9 @@
 
 ## Где сейчас запущен
 
-Запущен на сервере [DigitalOcean](https://www.digitalocean.com/products/droplets/).
+~~Запущен на сервере [DigitalOcean](https://www.digitalocean.com/products/droplets/).~~
+
+На данный момент нигде не запущён.
 
 При создании тега/релизе в *main* собирается Docker-образ и пушится в Docker Hub,
 откуда скачивается на сервер и затем запускается с помощью WatchTower.
